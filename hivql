@@ -1,0 +1,358 @@
+```sql id="9jlwrr"
+-- --------------------------------------------------
+-- AIM:
+-- Write an application using HiveQL for Flight
+-- Information System
+-- --------------------------------------------------
+
+
+-- --------------------------------------------------
+-- STEP 1 : START HIVE
+-- --------------------------------------------------
+
+hive;
+
+
+-- --------------------------------------------------
+-- STEP 2 : CREATE DATABASE
+-- --------------------------------------------------
+
+CREATE DATABASE flightdb;
+
+
+-- --------------------------------------------------
+-- STEP 3 : USE DATABASE
+-- --------------------------------------------------
+
+USE flightdb;
+
+
+-- --------------------------------------------------
+-- STEP 4 : CREATE FLIGHT TABLE
+-- --------------------------------------------------
+
+CREATE TABLE flight(
+    year INT,
+    month INT,
+    day INT,
+    day_of_week INT,
+    dep_time INT,
+    crs_dep_time INT,
+    arr_time INT,
+    crs_arr_time INT,
+    unique_carrier STRING,
+    flight_num INT,
+    tail_num STRING,
+    actual_elapsed_time INT,
+    crs_elapsed_time INT,
+    air_time INT,
+    arr_delay INT,
+    dep_delay INT,
+    origin STRING,
+    dest STRING,
+    distance INT,
+    taxi_in INT,
+    taxi_out INT,
+    cancelled INT,
+    cancellation_code STRING,
+    diverted INT,
+    carrier_delay STRING,
+    weather_delay STRING,
+    nas_delay STRING,
+    security_delay STRING,
+    late_aircraft_delay STRING
+)
+
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+
+-- --------------------------------------------------
+-- STEP 5 : SHOW TABLES
+-- --------------------------------------------------
+
+SHOW TABLES;
+
+
+-- --------------------------------------------------
+-- STEP 6 : LOAD DATASET
+-- --------------------------------------------------
+
+LOAD DATA LOCAL INPATH '/home/cloudera/Downloads/flight_info.csv'
+INTO TABLE flight;
+
+
+-- --------------------------------------------------
+-- STEP 7 : DISPLAY RECORDS
+-- --------------------------------------------------
+
+SELECT * FROM flight LIMIT 10;
+
+
+-- --------------------------------------------------
+-- STEP 8 : INSERT NEW RECORD
+-- --------------------------------------------------
+
+INSERT INTO TABLE flight
+VALUES(
+2008,1,1,2,1000,1030,1200,1230,
+'AI',101,'TN01',120,130,100,
+10,5,'PUNE','DELHI',1500,
+5,10,0,'N',0,'0','0','0','0','0'
+);
+
+
+-- --------------------------------------------------
+-- STEP 9 : ALTER TABLE
+-- --------------------------------------------------
+
+ALTER TABLE flight
+ADD COLUMNS (airline STRING);
+
+
+-- --------------------------------------------------
+-- STEP 10 : CREATE EXTERNAL TABLE
+-- --------------------------------------------------
+
+CREATE EXTERNAL TABLE flight_ext(
+    year INT,
+    month INT,
+    dep_delay INT,
+    origin STRING,
+    dest STRING
+)
+
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION '/user/hive/flightdata';
+
+
+-- --------------------------------------------------
+-- STEP 11 : CREATE INDEX
+-- --------------------------------------------------
+
+CREATE INDEX idx
+ON TABLE flight(day)
+AS 'COMPACT'
+WITH DEFERRED REBUILD;
+
+
+-- --------------------------------------------------
+-- STEP 12 : REBUILD INDEX
+-- --------------------------------------------------
+
+ALTER INDEX idx
+ON flight
+REBUILD;
+
+
+-- --------------------------------------------------
+-- STEP 13 : JOIN TABLES
+-- --------------------------------------------------
+
+CREATE TABLE airline(
+    flight_num INT,
+    airline_name STRING
+);
+
+SELECT f.flight_num,
+f.origin,
+f.dest,
+a.airline_name
+
+FROM flight f
+JOIN airline a
+ON(f.flight_num=a.flight_num);
+
+
+-- --------------------------------------------------
+-- STEP 14 : AVERAGE DEPARTURE DELAY
+-- --------------------------------------------------
+
+SELECT day_of_week,
+AVG(dep_delay) AS avg_departure_delay
+
+FROM flight
+
+GROUP BY day_of_week;
+```
+```sql id="9jlwrr"
+-- --------------------------------------------------
+-- AIM:
+-- Write an application using HiveQL for Flight
+-- Information System
+-- --------------------------------------------------
+
+
+-- --------------------------------------------------
+-- STEP 1 : START HIVE
+-- --------------------------------------------------
+
+hive;
+
+
+-- --------------------------------------------------
+-- STEP 2 : CREATE DATABASE
+-- --------------------------------------------------
+
+CREATE DATABASE flightdb;
+
+
+-- --------------------------------------------------
+-- STEP 3 : USE DATABASE
+-- --------------------------------------------------
+
+USE flightdb;
+
+
+-- --------------------------------------------------
+-- STEP 4 : CREATE FLIGHT TABLE
+-- --------------------------------------------------
+
+CREATE TABLE flight(
+    year INT,
+    month INT,
+    day INT,
+    day_of_week INT,
+    dep_time INT,
+    crs_dep_time INT,
+    arr_time INT,
+    crs_arr_time INT,
+    unique_carrier STRING,
+    flight_num INT,
+    tail_num STRING,
+    actual_elapsed_time INT,
+    crs_elapsed_time INT,
+    air_time INT,
+    arr_delay INT,
+    dep_delay INT,
+    origin STRING,
+    dest STRING,
+    distance INT,
+    taxi_in INT,
+    taxi_out INT,
+    cancelled INT,
+    cancellation_code STRING,
+    diverted INT,
+    carrier_delay STRING,
+    weather_delay STRING,
+    nas_delay STRING,
+    security_delay STRING,
+    late_aircraft_delay STRING
+)
+
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+
+-- --------------------------------------------------
+-- STEP 5 : SHOW TABLES
+-- --------------------------------------------------
+
+SHOW TABLES;
+
+
+-- --------------------------------------------------
+-- STEP 6 : LOAD DATASET
+-- --------------------------------------------------
+
+LOAD DATA LOCAL INPATH '/home/cloudera/Downloads/flight_info.csv'
+INTO TABLE flight;
+
+
+-- --------------------------------------------------
+-- STEP 7 : DISPLAY RECORDS
+-- --------------------------------------------------
+
+SELECT * FROM flight LIMIT 10;
+
+
+-- --------------------------------------------------
+-- STEP 8 : INSERT NEW RECORD
+-- --------------------------------------------------
+
+INSERT INTO TABLE flight
+VALUES(
+2008,1,1,2,1000,1030,1200,1230,
+'AI',101,'TN01',120,130,100,
+10,5,'PUNE','DELHI',1500,
+5,10,0,'N',0,'0','0','0','0','0'
+);
+
+
+-- --------------------------------------------------
+-- STEP 9 : ALTER TABLE
+-- --------------------------------------------------
+
+ALTER TABLE flight
+ADD COLUMNS (airline STRING);
+
+
+-- --------------------------------------------------
+-- STEP 10 : CREATE EXTERNAL TABLE
+-- --------------------------------------------------
+
+CREATE EXTERNAL TABLE flight_ext(
+    year INT,
+    month INT,
+    dep_delay INT,
+    origin STRING,
+    dest STRING
+)
+
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION '/user/hive/flightdata';
+
+
+-- --------------------------------------------------
+-- STEP 11 : CREATE INDEX
+-- --------------------------------------------------
+
+CREATE INDEX idx
+ON TABLE flight(day)
+AS 'COMPACT'
+WITH DEFERRED REBUILD;
+
+
+-- --------------------------------------------------
+-- STEP 12 : REBUILD INDEX
+-- --------------------------------------------------
+
+ALTER INDEX idx
+ON flight
+REBUILD;
+
+
+-- --------------------------------------------------
+-- STEP 13 : JOIN TABLES
+-- --------------------------------------------------
+
+CREATE TABLE airline(
+    flight_num INT,
+    airline_name STRING
+);
+
+SELECT f.flight_num,
+f.origin,
+f.dest,
+a.airline_name
+
+FROM flight f
+JOIN airline a
+ON(f.flight_num=a.flight_num);
+
+
+-- --------------------------------------------------
+-- STEP 14 : AVERAGE DEPARTURE DELAY
+-- --------------------------------------------------
+
+SELECT day_of_week,
+AVG(dep_delay) AS avg_departure_delay
+
+FROM flight
+
+GROUP BY day_of_week;
+```
